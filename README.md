@@ -183,12 +183,6 @@ See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for a detailed walkthrough of
 
 ---
 
-## Contributing
-
-See [`CONTRIBUTING.md`](CONTRIBUTING.md).
-
----
-
 ## Security
 
 See [`SECURITY.md`](SECURITY.md) for the responsible disclosure policy and data-handling guarantees.
@@ -198,9 +192,3 @@ See [`SECURITY.md`](SECURITY.md) for the responsible disclosure policy and data-
 ## Legal Notice
 
 This tool accesses your **own** backups on your **own** Mac. It does not connect to the internet, does not transmit data anywhere, and does not bypass any Apple server-side systems. Use it only on backups you own and have the right to modify.
-
----
-
-## License
-
-MIT — see [`LICENSE`](LICENSE).
