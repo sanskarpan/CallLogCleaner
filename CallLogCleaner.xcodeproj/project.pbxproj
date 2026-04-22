@@ -1,0 +1,501 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A1000000000000000000F040 /* CallLogCleanerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000F020 /* CallLogCleanerApp.swift */; };
+		A1000000000000000000F041 /* AppViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000F021 /* AppViewModel.swift */; };
+		A1000000000000000000F042 /* BackupInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000F022 /* BackupInfo.swift */; };
+		A1000000000000000000F043 /* CallRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000F023 /* CallRecord.swift */; };
+		A1000000000000000000F044 /* FilterCriteria.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000F024 /* FilterCriteria.swift */; };
+		A1000000000000000000F045 /* BackupScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000F025 /* BackupScanner.swift */; };
+		A1000000000000000000F046 /* BackupDecryptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000F026 /* BackupDecryptor.swift */; };
+		A1000000000000000000F047 /* ManifestReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000F027 /* ManifestReader.swift */; };
+		A1000000000000000000F048 /* CallHistoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000F028 /* CallHistoryService.swift */; };
+		A1000000000000000000F049 /* BackupModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000F029 /* BackupModifier.swift */; };
+		A1000000000000000000F04A /* CryptoHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000F02A /* CryptoHelper.swift */; };
+		A1000000000000000000F04B /* SQLiteDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000F02B /* SQLiteDatabase.swift */; };
+		A1000000000000000000F04C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000F02C /* ContentView.swift */; };
+		A1000000000000000000F04D /* BackupListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000F02D /* BackupListView.swift */; };
+		A1000000000000000000F04E /* BackupDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000F02E /* BackupDetailView.swift */; };
+		A1000000000000000000F04F /* PasswordEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000F02F /* PasswordEntryView.swift */; };
+		A1000000000000000000F050 /* FilterBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000F030 /* FilterBarView.swift */; };
+		A1000000000000000000F051 /* CallHistoryTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000F031 /* CallHistoryTableView.swift */; };
+		A1000000000000000000F052 /* DeleteConfirmationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000F032 /* DeleteConfirmationView.swift */; };
+		A1000000000000000000F053 /* RestoreInstructionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000F033 /* RestoreInstructionsView.swift */; };
+		A1000000000000000000F054 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000F034 /* Info.plist */; };
+		A1000000000000000000F055 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A1000000000000000000F036 /* libsqlite3.tbd */; };
+		A10000000000000000000C01 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000B01 /* DesignSystem.swift */; };
+		A10000000000000000000C02 /* ChartCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000B02 /* ChartCard.swift */; };
+		A10000000000000000000C03 /* DonutChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000B03 /* DonutChartView.swift */; };
+		A10000000000000000000C04 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000B04 /* EmptyStateView.swift */; };
+		A10000000000000000000C05 /* PillBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000B05 /* PillBadge.swift */; };
+		A10000000000000000000C06 /* StatCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000B06 /* StatCard.swift */; };
+		A10000000000000000000C07 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000B07 /* ToastView.swift */; };
+		A10000000000000000000C08 /* VisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000B08 /* VisualEffectView.swift */; };
+		A10000000000000000000C09 /* AnalyticsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000B09 /* AnalyticsEngine.swift */; };
+		A10000000000000000000C0A /* ExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000B0A /* ExportService.swift */; };
+		A10000000000000000000C0B /* AnalyticsDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000B0B /* AnalyticsDashboardView.swift */; };
+		A10000000000000000000C0C /* ExportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000B0C /* ExportView.swift */; };
+		A10000000000000000000C0D /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000B0D /* SettingsView.swift */; };
+		A10000000000000000000C0E /* SmartSelectSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000B0E /* SmartSelectSheet.swift */; };
+		A10000000000000000000C0F /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A10000000000000000000B0F /* Charts.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A1000000000000000000F00C /* CallLogCleaner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CallLogCleaner.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1000000000000000000F020 /* CallLogCleanerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallLogCleanerApp.swift; sourceTree = "<group>"; };
+		A1000000000000000000F021 /* AppViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModel.swift; sourceTree = "<group>"; };
+		A1000000000000000000F022 /* BackupInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupInfo.swift; sourceTree = "<group>"; };
+		A1000000000000000000F023 /* CallRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallRecord.swift; sourceTree = "<group>"; };
+		A1000000000000000000F024 /* FilterCriteria.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterCriteria.swift; sourceTree = "<group>"; };
+		A1000000000000000000F025 /* BackupScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupScanner.swift; sourceTree = "<group>"; };
+		A1000000000000000000F026 /* BackupDecryptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupDecryptor.swift; sourceTree = "<group>"; };
+		A1000000000000000000F027 /* ManifestReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManifestReader.swift; sourceTree = "<group>"; };
+		A1000000000000000000F028 /* CallHistoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallHistoryService.swift; sourceTree = "<group>"; };
+		A1000000000000000000F029 /* BackupModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupModifier.swift; sourceTree = "<group>"; };
+		A1000000000000000000F02A /* CryptoHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoHelper.swift; sourceTree = "<group>"; };
+		A1000000000000000000F02B /* SQLiteDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteDatabase.swift; sourceTree = "<group>"; };
+		A1000000000000000000F02C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A1000000000000000000F02D /* BackupListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupListView.swift; sourceTree = "<group>"; };
+		A1000000000000000000F02E /* BackupDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupDetailView.swift; sourceTree = "<group>"; };
+		A1000000000000000000F02F /* PasswordEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordEntryView.swift; sourceTree = "<group>"; };
+		A1000000000000000000F030 /* FilterBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterBarView.swift; sourceTree = "<group>"; };
+		A1000000000000000000F031 /* CallHistoryTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallHistoryTableView.swift; sourceTree = "<group>"; };
+		A1000000000000000000F032 /* DeleteConfirmationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteConfirmationView.swift; sourceTree = "<group>"; };
+		A1000000000000000000F033 /* RestoreInstructionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoreInstructionsView.swift; sourceTree = "<group>"; };
+		A1000000000000000000F034 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A1000000000000000000F035 /* CallLogCleaner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CallLogCleaner.entitlements; sourceTree = "<group>"; };
+		A1000000000000000000F036 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		A10000000000000000000B01 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
+		A10000000000000000000B02 /* ChartCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartCard.swift; sourceTree = "<group>"; };
+		A10000000000000000000B03 /* DonutChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonutChartView.swift; sourceTree = "<group>"; };
+		A10000000000000000000B04 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
+		A10000000000000000000B05 /* PillBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PillBadge.swift; sourceTree = "<group>"; };
+		A10000000000000000000B06 /* StatCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatCard.swift; sourceTree = "<group>"; };
+		A10000000000000000000B07 /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
+		A10000000000000000000B08 /* VisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualEffectView.swift; sourceTree = "<group>"; };
+		A10000000000000000000B09 /* AnalyticsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsEngine.swift; sourceTree = "<group>"; };
+		A10000000000000000000B0A /* ExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportService.swift; sourceTree = "<group>"; };
+		A10000000000000000000B0B /* AnalyticsDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsDashboardView.swift; sourceTree = "<group>"; };
+		A10000000000000000000B0C /* ExportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportView.swift; sourceTree = "<group>"; };
+		A10000000000000000000B0D /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A10000000000000000000B0E /* SmartSelectSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartSelectSheet.swift; sourceTree = "<group>"; };
+		A10000000000000000000B0F /* Charts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Charts.framework; path = System/Library/Frameworks/Charts.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A1000000000000000000F004 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000000000000000000F055 /* libsqlite3.tbd in Frameworks */,
+				A10000000000000000000C0F /* Charts.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A1000000000000000000F00D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A1000000000000000000F00C /* CallLogCleaner.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A1000000000000000000F00E /* MainGroup */ = {
+			isa = PBXGroup;
+			children = (
+				A1000000000000000000F00F /* CallLogCleaner */,
+				A1000000000000000000F036 /* libsqlite3.tbd */,
+				A10000000000000000000B0F /* Charts.framework */,
+				A1000000000000000000F00D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A1000000000000000000F00F /* CallLogCleaner */ = {
+			isa = PBXGroup;
+			children = (
+				A1000000000000000000F020 /* CallLogCleanerApp.swift */,
+				A1000000000000000000F021 /* AppViewModel.swift */,
+				A10000000000000000000B01 /* DesignSystem.swift */,
+				A1000000000000000000F034 /* Info.plist */,
+				A1000000000000000000F035 /* CallLogCleaner.entitlements */,
+				A1000000000000000000F010 /* Models */,
+				A1000000000000000000F011 /* Services */,
+				A1000000000000000000F012 /* Utilities */,
+				A10000000000000000000D01 /* Components */,
+				A1000000000000000000F013 /* Views */,
+			);
+			path = CallLogCleaner;
+			sourceTree = "<group>";
+		};
+		A1000000000000000000F010 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A1000000000000000000F022 /* BackupInfo.swift */,
+				A1000000000000000000F023 /* CallRecord.swift */,
+				A1000000000000000000F024 /* FilterCriteria.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A10000000000000000000D01 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				A10000000000000000000B02 /* ChartCard.swift */,
+				A10000000000000000000B03 /* DonutChartView.swift */,
+				A10000000000000000000B04 /* EmptyStateView.swift */,
+				A10000000000000000000B05 /* PillBadge.swift */,
+				A10000000000000000000B06 /* StatCard.swift */,
+				A10000000000000000000B07 /* ToastView.swift */,
+				A10000000000000000000B08 /* VisualEffectView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		A1000000000000000000F011 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A1000000000000000000F025 /* BackupScanner.swift */,
+				A1000000000000000000F026 /* BackupDecryptor.swift */,
+				A1000000000000000000F027 /* ManifestReader.swift */,
+				A1000000000000000000F028 /* CallHistoryService.swift */,
+				A1000000000000000000F029 /* BackupModifier.swift */,
+				A10000000000000000000B09 /* AnalyticsEngine.swift */,
+				A10000000000000000000B0A /* ExportService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		A1000000000000000000F012 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				A1000000000000000000F02A /* CryptoHelper.swift */,
+				A1000000000000000000F02B /* SQLiteDatabase.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		A1000000000000000000F013 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A1000000000000000000F02C /* ContentView.swift */,
+				A1000000000000000000F02D /* BackupListView.swift */,
+				A1000000000000000000F02E /* BackupDetailView.swift */,
+				A1000000000000000000F02F /* PasswordEntryView.swift */,
+				A1000000000000000000F030 /* FilterBarView.swift */,
+				A1000000000000000000F031 /* CallHistoryTableView.swift */,
+				A1000000000000000000F032 /* DeleteConfirmationView.swift */,
+				A1000000000000000000F033 /* RestoreInstructionsView.swift */,
+				A10000000000000000000B0B /* AnalyticsDashboardView.swift */,
+				A10000000000000000000B0C /* ExportView.swift */,
+				A10000000000000000000B0D /* SettingsView.swift */,
+				A10000000000000000000B0E /* SmartSelectSheet.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A1000000000000000000F002 /* CallLogCleaner */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1000000000000000000F008 /* Build configuration list for PBXNativeTarget "CallLogCleaner" */;
+			buildPhases = (
+				A1000000000000000000F003 /* Sources */,
+				A1000000000000000000F004 /* Frameworks */,
+				A1000000000000000000F005 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CallLogCleaner;
+			productName = CallLogCleaner;
+			productReference = A1000000000000000000F00C /* CallLogCleaner.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A1000000000000000000F001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					A1000000000000000000F002 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = A1000000000000000000F009 /* Build configuration list for PBXProject "CallLogCleaner" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A1000000000000000000F00E /* MainGroup */;
+			productRefGroup = A1000000000000000000F00D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A1000000000000000000F002 /* CallLogCleaner */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A1000000000000000000F005 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A1000000000000000000F003 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000000000000000000F040 /* CallLogCleanerApp.swift in Sources */,
+				A1000000000000000000F041 /* AppViewModel.swift in Sources */,
+				A1000000000000000000F042 /* BackupInfo.swift in Sources */,
+				A1000000000000000000F043 /* CallRecord.swift in Sources */,
+				A1000000000000000000F044 /* FilterCriteria.swift in Sources */,
+				A1000000000000000000F045 /* BackupScanner.swift in Sources */,
+				A1000000000000000000F046 /* BackupDecryptor.swift in Sources */,
+				A1000000000000000000F047 /* ManifestReader.swift in Sources */,
+				A1000000000000000000F048 /* CallHistoryService.swift in Sources */,
+				A1000000000000000000F049 /* BackupModifier.swift in Sources */,
+				A1000000000000000000F04A /* CryptoHelper.swift in Sources */,
+				A1000000000000000000F04B /* SQLiteDatabase.swift in Sources */,
+				A1000000000000000000F04C /* ContentView.swift in Sources */,
+				A1000000000000000000F04D /* BackupListView.swift in Sources */,
+				A1000000000000000000F04E /* BackupDetailView.swift in Sources */,
+				A1000000000000000000F04F /* PasswordEntryView.swift in Sources */,
+				A1000000000000000000F050 /* FilterBarView.swift in Sources */,
+				A1000000000000000000F051 /* CallHistoryTableView.swift in Sources */,
+				A1000000000000000000F052 /* DeleteConfirmationView.swift in Sources */,
+				A1000000000000000000F053 /* RestoreInstructionsView.swift in Sources */,
+				A10000000000000000000C01 /* DesignSystem.swift in Sources */,
+				A10000000000000000000C02 /* ChartCard.swift in Sources */,
+				A10000000000000000000C03 /* DonutChartView.swift in Sources */,
+				A10000000000000000000C04 /* EmptyStateView.swift in Sources */,
+				A10000000000000000000C05 /* PillBadge.swift in Sources */,
+				A10000000000000000000C06 /* StatCard.swift in Sources */,
+				A10000000000000000000C07 /* ToastView.swift in Sources */,
+				A10000000000000000000C08 /* VisualEffectView.swift in Sources */,
+				A10000000000000000000C09 /* AnalyticsEngine.swift in Sources */,
+				A10000000000000000000C0A /* ExportService.swift in Sources */,
+				A10000000000000000000C0B /* AnalyticsDashboardView.swift in Sources */,
+				A10000000000000000000C0C /* ExportView.swift in Sources */,
+				A10000000000000000000C0D /* SettingsView.swift in Sources */,
+				A10000000000000000000C0E /* SmartSelectSheet.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		A1000000000000000000F006 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = CallLogCleaner/CallLogCleaner.entitlements;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = CallLogCleaner/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.calllogcleaner.app";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		A1000000000000000000F007 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = CallLogCleaner/CallLogCleaner.entitlements;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = CallLogCleaner/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.calllogcleaner.app";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 5.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A1000000000000000000F00A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_CYCLE = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		A1000000000000000000F00B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_CYCLE = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A1000000000000000000F008 /* Build configuration list for PBXNativeTarget "CallLogCleaner" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1000000000000000000F006 /* Debug */,
+				A1000000000000000000F007 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1000000000000000000F009 /* Build configuration list for PBXProject "CallLogCleaner" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1000000000000000000F00A /* Debug */,
+				A1000000000000000000F00B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = A1000000000000000000F001 /* Project object */;
+}
