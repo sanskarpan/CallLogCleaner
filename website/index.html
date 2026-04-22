@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CallLog Cleaner — Your call history, under your control</title>
+<meta name="description" content="Read, filter, and delete call records from encrypted iPhone backups. 100% local. No servers. No accounts.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+
+<style>
+/* ─── Reset ─────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+img, svg { display: block; max-width: 100%; }
+button { cursor: pointer; border: none; background: none; font: inherit; }
+a { color: inherit; text-decoration: none; }
+
+/* ─── Tokens ─────────────────────────────── */
+:root {
+  --bg0: #0b0b0e;
+  --bg1: #111116;
+  --bg2: #17171e;
+  --bg3: #1e1e27;
+  --bg4: #252530;
+
+  --lime:     #b6ff3a;
+  --lime-d:   rgba(182, 255, 58, 0.08);
+  --lime-m:   rgba(182, 255, 58, 0.18);
+  --lime-glow: 0 0 32px rgba(182, 255, 58, 0.22), 0 0 8px rgba(182, 255, 58, 0.14);
+
+  --t0: #ececf1;
+  --t1: #a0a0b2;
+  --t2: #5c5c72;
+  --t3: #333345;
+
+  --red:    #ff4444;
+  --red-d:  rgba(255, 68, 68, 0.12);
+  --green:  #3de39a;
+  --blue:   #5ca8ff;
+  --purple: #b094ff;
+  --amber:  #ffbb38;
+
+  --border:  rgba(255,255,255,0.055);
+  --borderM: rgba(255,255,255,0.10);
+
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 16px;
+  --r-xl: 22px;
+
+  --display: 'Instrument Serif', Georgia, serif;
+  --mono:    'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* ─── Base ─────────────────────────────── */
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg0);
+  color: var(--t0);
+  font-family: var(--mono);
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 1.65;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Noise overlay */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  opacity: 0.028;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ─── Nav ─────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 48px;
+  height: 64px;
+  background: rgba(11, 11, 14, 0.80);
+  backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; font-weight: 500; letter-spacing: 0.02em;
+  color: var(--t0);
+}
+.nav-logo-icon {
+  width: 28px; height: 28px;
+  background: var(--lime-d);
+  border: 1px solid rgba(182, 255, 58, 0.25);
+  border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+}
+
+.nav-links {
+  display: flex; align-items: center; gap: 32px;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 12px; font-weight: 400;
+  color: var(--t2);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--t0); }
+
+.nav-cta {
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 16px;
+  height: 34px;
+  background: var(--lime);
+  color: #0b0b0e;
+  border-radius: var(--r-sm);
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: box-shadow 0.25s, transform 0.2s;
+}
+.nav-cta:hover {
+  box-shadow: var(--lime-glow);
+  transform: translateY(-1px);
+}
+
+/* ─── Hero ─────────────────────────────── */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  padding-top: 64px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Gradient background orbs */
+.hero::before {
+  content: '';
+  position: absolute;
+  width: 600px; height: 600px;
+  top: -100px; right: -100px;
+  background: radial-gradient(circle, rgba(182, 255, 58, 0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  width: 400px; height: 400px;
+  bottom: 100px; left: 200px;
+  background: radial-gradient(circle, rgba(92, 168, 255, 0.03) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 56px 80px 64px;
+  position: relative; z-index: 1;
+}
+
+.hero-eyebrow {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 32px;
+}
+.hero-eyebrow-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px;
+  background: var(--lime-d);
+  border: 1px solid rgba(182, 255, 58, 0.2);
+  border-radius: 999px;
+  font-size: 10px; font-weight: 500;
+  color: var(--lime);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.eyebrow-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--lime);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.75); }
+}
+
+.hero-heading {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: clamp(48px, 5.5vw, 80px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--t0);
+  margin-bottom: 24px;
+}
+.hero-heading em {
+  color: var(--lime);
+  font-style: italic;
+}
+
+.hero-sub {
+  font-size: 14px; font-weight: 300;
+  color: var(--t1);
+  line-height: 1.7;
+  max-width: 380px;
+  margin-bottom: 40px;
+}
+
+.hero-actions {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 48px;
+}
+
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 0 24px;
+  height: 48px;
+  background: var(--lime);
+  color: #0b0b0e;
+  border-radius: var(--r-md);
+  font-family: var(--mono);
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: box-shadow 0.3s, transform 0.2s;
+  white-space: nowrap;
+}
+.btn-primary:hover {
+  box-shadow: var(--lime-glow);
+  transform: translateY(-2px);
+}
+.btn-primary svg { width: 16px; height: 16px; }
+
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 0 20px;
+  height: 48px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  font-family: var(--mono);
+  font-size: 13px; font-weight: 400;
+  color: var(--t1);
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-ghost:hover { border-color: var(--borderM); color: var(--t0); }
+
+.hero-meta {
+  font-size: 11px; font-weight: 300;
+  color: var(--t3);
+  letter-spacing: 0.02em;
+}
+.hero-meta span { color: var(--t2); }
+
+/* ─── Demo Card ─────────────────────────── */
+.hero-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 64px 80px 24px;
+  position: relative; z-index: 1;
+}
+
+.demo-card {
+  width: 100%;
+  max-width: 540px;
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.03),
+    0 24px 80px rgba(0,0,0,0.6),
+    0 8px 24px rgba(0,0,0,0.4);
+  position: relative;
+}
+
+.demo-card-chrome {
+  display: flex; align-items: center;
+  padding: 14px 16px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  gap: 8px;
+}
+.chrome-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+}
+.chrome-dot:nth-child(1) { background: #ff5f57; }
+.chrome-dot:nth-child(2) { background: #ffbd2e; }
+.chrome-dot:nth-child(3) { background: #28c840; }
+.chrome-title {
+  margin-left: auto;
+  font-size: 11px; font-weight: 400;
+  color: var(--t2);
+  letter-spacing: 0.04em;
+}
+.chrome-lock {
+  font-size: 10px;
+  color: var(--green);
+}
+
+.demo-kpi-strip {
+  display: flex;
+  padding: 10px 16px;
+  gap: 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+.demo-kpi {
+  display: flex; align-items: center; gap: 6px;
+  padding: 3px 8px;
+  background: var(--bg3);
+  border-radius: var(--r-sm);
+}
+.demo-kpi-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+}
+.demo-kpi span {
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.demo-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.demo-table th {
+  padding: 7px 12px;
+  font-size: 9px; font-weight: 500;
+  color: var(--t3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+  white-space: nowrap;
+}
+.demo-table td {
+  padding: 8px 12px;
+  font-size: 11px; font-weight: 300;
+  color: var(--t1);
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.demo-table tr {
+  transition: background 0.2s;
+  opacity: 0;
+  transform: translateX(-8px);
+}
+.demo-table tr.row-visible {
+  animation: row-in 0.3s ease forwards;
+}
+.demo-table tr.row-selected td {
+  background: rgba(182, 255, 58, 0.04);
+}
+.demo-table tr.row-selected .row-check {
+  background: var(--lime);
+  border-color: var(--lime);
+}
+.demo-table tr.row-selected .row-check::after {
+  opacity: 1;
+}
+.demo-table tr.row-deleting td {
+  background: var(--red-d) !important;
+  color: var(--red) !important;
+}
+.demo-table tr.row-gone {
+  animation: row-out 0.35s ease forwards;
+}
+
+@keyframes row-in {
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes row-out {
+  from { opacity: 1; transform: translateX(0) scaleY(1); }
+  to   { opacity: 0; transform: translateX(-12px) scaleY(0); }
+}
+
+.row-check {
+  width: 13px; height: 13px;
+  border: 1px solid var(--t3);
+  border-radius: 3px;
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s;
+  position: relative;
+}
+.row-check::after {
+  content: '✓';
+  font-size: 8px;
+  color: #0b0b0e;
+  font-weight: 700;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.badge {
+  display: inline-flex; align-items: center;
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-size: 9px; font-weight: 500;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.badge-missed   { background: rgba(255,68,68,0.12);   color: var(--red);    }
+.badge-answered { background: rgba(61,227,154,0.10);  color: var(--green);  }
+.badge-phone    { background: rgba(92,168,255,0.10);  color: var(--blue);   }
+.badge-ft-v     { background: rgba(176,148,255,0.10); color: var(--purple); }
+.badge-ft-a     { background: rgba(61,227,154,0.08);  color: var(--green);  }
+
+.demo-dir {
+  font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+}
+.dir-in  { color: var(--green); }
+.dir-out { color: var(--blue); }
+
+.demo-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+  background: var(--bg2);
+}
+.demo-status {
+  font-size: 10px; font-weight: 300;
+  color: var(--t2);
+}
+.demo-status strong { color: var(--t0); font-weight: 500; }
+
+.demo-delete-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 12px;
+  background: transparent;
+  border: 1px solid rgba(255,68,68,0.25);
+  border-radius: var(--r-sm);
+  font-family: var(--mono);
+  font-size: 10px; font-weight: 500;
+  color: var(--red);
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.3s, transform 0.3s, background 0.2s, box-shadow 0.2s;
+}
+.demo-delete-btn.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.demo-delete-btn.pulse {
+  animation: btn-pulse 1.2s ease-in-out infinite;
+}
+@keyframes btn-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,68,68,0); }
+  50% { box-shadow: 0 0 0 4px rgba(255,68,68,0.15); }
+}
+.demo-delete-btn:hover {
+  background: var(--red-d);
+  border-color: rgba(255,68,68,0.5);
+}
+
+/* ─── Trust Bar ─────────────────────────── */
+.trust-bar {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 0 64px;
+  background: var(--bg1);
+}
+.trust-inner {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  divide-x: var(--border);
+}
+.trust-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 28px 32px;
+  border-right: 1px solid var(--border);
+}
+.trust-item:last-child { border-right: none; }
+
+.trust-icon {
+  width: 36px; height: 36px;
+  background: var(--lime-d);
+  border: 1px solid rgba(182, 255, 58, 0.15);
+  border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.trust-text strong {
+  display: block;
+  font-size: 12px; font-weight: 500;
+  color: var(--t0);
+  letter-spacing: 0.01em;
+  margin-bottom: 2px;
+}
+.trust-text span {
+  font-size: 11px; font-weight: 300;
+  color: var(--t2);
+}
+
+/* ─── How It Works ─────────────────────── */
+.section {
+  padding: 96px 64px;
+}
+.section-label {
+  font-size: 10px; font-weight: 500;
+  color: var(--lime);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.section-title {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: clamp(36px, 4vw, 56px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--t0);
+  margin-bottom: 12px;
+}
+.section-sub {
+  font-size: 14px; font-weight: 300;
+  color: var(--t1);
+  max-width: 480px;
+  line-height: 1.7;
+  margin-bottom: 56px;
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  position: relative;
+}
+.steps-grid::before {
+  content: '';
+  position: absolute;
+  top: 26px; left: 52px; right: 52px;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    var(--border) 10%,
+    var(--lime) 30%, var(--lime) 70%,
+    var(--border) 90%,
+    transparent
+  );
+}
+
+.step {
+  padding: 0 24px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+.step.visible { opacity: 1; transform: translateY(0); }
+
+.step-num {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 500;
+  color: var(--t0);
+  margin-bottom: 20px;
+  position: relative;
+  transition: border-color 0.3s, background 0.3s;
+}
+.step-num-lime {
+  background: var(--lime-d);
+  border-color: rgba(182, 255, 58, 0.3);
+  color: var(--lime);
+}
+.step-num-lime::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid rgba(182, 255, 58, 0.12);
+}
+
+.step-title {
+  font-size: 13px; font-weight: 500;
+  color: var(--t0);
+  margin-bottom: 8px;
+}
+.step-desc {
+  font-size: 12px; font-weight: 300;
+  color: var(--t2);
+  line-height: 1.65;
+}
+
+/* ─── Features ─────────────────────────── */
+.features-section {
+  padding: 96px 64px;
+  background: var(--bg1);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  margin-top: 56px;
+}
+
+.feature-card {
+  background: var(--bg1);
+  padding: 36px 32px;
+  transition: background 0.25s;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s, transform 0.5s, background 0.25s;
+}
+.feature-card.visible { opacity: 1; transform: translateY(0); }
+.feature-card:hover { background: var(--bg2); }
+
+.feature-icon {
+  width: 44px; height: 44px;
+  border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+.fi-lime   { background: var(--lime-d);            border: 1px solid rgba(182,255,58,0.2); }
+.fi-blue   { background: rgba(92,168,255,0.08);    border: 1px solid rgba(92,168,255,0.2); }
+.fi-purple { background: rgba(176,148,255,0.08);   border: 1px solid rgba(176,148,255,0.2); }
+
+.feature-title {
+  font-size: 15px; font-weight: 500;
+  color: var(--t0);
+  margin-bottom: 10px;
+  letter-spacing: -0.01em;
+}
+.feature-desc {
+  font-size: 12px; font-weight: 300;
+  color: var(--t2);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+.feature-tags {
+  display: flex; flex-wrap: wrap; gap: 5px;
+}
+.feature-tag {
+  padding: 2px 7px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  font-size: 9px; font-weight: 500;
+  color: var(--t3);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* ─── Analytics Preview ─────────────────── */
+.analytics-section {
+  padding: 96px 64px;
+  position: relative;
+  overflow: hidden;
+}
+.analytics-section::before {
+  content: '';
+  position: absolute;
+  width: 700px; height: 700px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(ellipse, rgba(182,255,58,0.025) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.analytics-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 64px;
+  align-items: center;
+}
+
+.analytics-text .section-sub { margin-bottom: 28px; }
+
+.analytics-bullets {
+  list-style: none;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.analytics-bullets li {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 12px; font-weight: 300;
+  color: var(--t1);
+}
+.bullet-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--lime);
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+.analytics-preview {
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+}
+
+.ap-chrome {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 16px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+}
+.ap-chrome-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+}
+
+.ap-tabs {
+  display: flex; gap: 4px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+.ap-tab {
+  padding: 4px 12px;
+  border-radius: var(--r-sm);
+  font-size: 10px; font-weight: 500;
+  color: var(--t2);
+  letter-spacing: 0.04em;
+}
+.ap-tab.active {
+  background: var(--lime-d);
+  border: 1px solid rgba(182,255,58,0.2);
+  color: var(--lime);
+}
+
+.ap-stats-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.ap-stat {
+  background: var(--bg1);
+  padding: 14px 14px;
+}
+.ap-stat-val {
+  font-size: 18px; font-weight: 600;
+  color: var(--t0);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.ap-stat-lbl {
+  font-size: 9px; font-weight: 400;
+  color: var(--t2);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ap-chart {
+  padding: 20px 20px 8px;
+}
+.ap-chart-title {
+  font-size: 10px; font-weight: 500;
+  color: var(--t1);
+  letter-spacing: 0.04em;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+.chart-bars {
+  display: flex; align-items: flex-end; gap: 3px;
+  height: 80px;
+}
+.chart-bar {
+  flex: 1;
+  background: var(--lime-d);
+  border-radius: 2px 2px 0 0;
+  border: 1px solid rgba(182,255,58,0.15);
+  border-bottom: none;
+  transition: background 0.3s;
+  min-height: 4px;
+  position: relative;
+}
+.chart-bar:hover { background: var(--lime-m); }
+.chart-bar.bar-highlight {
+  background: var(--lime-m);
+  border-color: rgba(182,255,58,0.4);
+}
+.chart-bar.bar-highlight::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--lime);
+  border-radius: 2px 2px 0 0;
+}
+
+.ap-contacts {
+  padding: 0 20px 20px;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+.ap-contacts-title {
+  font-size: 9px; font-weight: 500;
+  color: var(--t3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.contact-row {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 8px;
+}
+.contact-bar-wrap {
+  flex: 1;
+  height: 4px;
+  background: var(--bg3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.contact-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--lime), rgba(182,255,58,0.5));
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.contact-bar-fill.animated { transform: scaleX(1); }
+.contact-name {
+  font-size: 10px; color: var(--t2);
+  width: 80px; text-align: right;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.contact-count {
+  font-size: 10px; font-weight: 500; color: var(--t1);
+  width: 24px; text-align: right;
+}
+
+/* ─── Technical ─────────────────────────── */
+.technical-section {
+  padding: 80px 64px;
+  background: var(--bg1);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.tech-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  margin-top: 56px;
+}
+
+.tech-block {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s, transform 0.6s;
+}
+.tech-block.visible { opacity: 1; transform: translateY(0); }
+
+.tech-block-title {
+  font-size: 10px; font-weight: 500;
+  color: var(--t2);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.tech-code {
+  background: var(--bg0);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 20px 20px;
+  font-size: 11px; font-weight: 300;
+  color: var(--t1);
+  line-height: 2;
+  overflow-x: auto;
+}
+.tc-comment { color: var(--t3); }
+.tc-key   { color: var(--purple); }
+.tc-val   { color: var(--lime); }
+.tc-str   { color: var(--amber); }
+.tc-num   { color: var(--blue); }
+
+.tech-list {
+  list-style: none;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.tech-list li {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 12px; font-weight: 300;
+  color: var(--t1);
+  padding: 10px 14px;
+  background: var(--bg0);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+}
+.tech-list li::before {
+  content: '▸';
+  font-size: 10px;
+  color: var(--lime);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+/* ─── Download ─────────────────────────── */
+.download-section {
+  padding: 120px 64px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.download-section::before {
+  content: '';
+  position: absolute;
+  width: 800px; height: 400px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(ellipse, rgba(182,255,58,0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.download-title {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: clamp(52px, 7vw, 96px);
+  line-height: 1.0;
+  letter-spacing: -0.025em;
+  color: var(--t0);
+  margin-bottom: 20px;
+  position: relative;
+}
+.download-title em { color: var(--lime); }
+
+.download-sub {
+  font-size: 14px; font-weight: 300;
+  color: var(--t1);
+  margin-bottom: 48px;
+  max-width: 440px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.7;
+}
+
+.download-actions {
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  margin-bottom: 28px;
+}
+
+.btn-download {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 0 32px;
+  height: 56px;
+  background: var(--lime);
+  color: #0b0b0e;
+  border-radius: var(--r-md);
+  font-family: var(--mono);
+  font-size: 14px; font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: box-shadow 0.3s, transform 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.btn-download::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%);
+}
+.btn-download:hover {
+  box-shadow: 0 0 40px rgba(182, 255, 58, 0.3), 0 0 12px rgba(182, 255, 58, 0.2);
+  transform: translateY(-2px);
+}
+.btn-download svg { width: 18px; height: 18px; position: relative; z-index: 1; }
+.btn-download span { position: relative; z-index: 1; }
+
+.download-req {
+  font-size: 11px; font-weight: 300;
+  color: var(--t3);
+  letter-spacing: 0.03em;
+}
+.download-req strong { color: var(--t2); font-weight: 400; }
+
+/* ─── Footer ─────────────────────────────── */
+footer {
+  padding: 32px 64px;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.footer-logo {
+  display: flex; align-items: center; gap: 9px;
+  font-size: 12px; font-weight: 400;
+  color: var(--t2);
+}
+.footer-logo-icon {
+  width: 22px; height: 22px;
+  background: var(--lime-d);
+  border: 1px solid rgba(182,255,58,0.15);
+  border-radius: 5px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+}
+
+.footer-copy {
+  font-size: 11px; font-weight: 300;
+  color: var(--t3);
+}
+.footer-links {
+  display: flex; gap: 24px; list-style: none;
+}
+.footer-links a {
+  font-size: 11px; font-weight: 300;
+  color: var(--t2);
+  transition: color 0.2s;
+  letter-spacing: 0.02em;
+}
+.footer-links a:hover { color: var(--t0); }
+
+/* ─── Scroll Reveal ─────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.65s cubic-bezier(0.16,1,0.3,1),
+              transform 0.65s cubic-bezier(0.16,1,0.3,1);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ─── Counter ─────────────────────────────── */
+.count-target { display: inline-block; }
+
+/* ─── Scrollbar ─────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg0); }
+::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--bg4); }
+
+/* ─── Selection ─────────────────────────── */
+::selection { background: rgba(182,255,58,0.2); color: var(--t0); }
+</style>
+</head>
+
+<body>
+
+<!-- ─── Nav ─────────────────────────────── -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">📲</div>
+    CallLog Cleaner
+  </a>
+  <ul class="nav-links">
+    <li><a href="#how-it-works">How it works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#analytics">Analytics</a></li>
+    <li><a href="#download">Download</a></li>
+  </ul>
+  <a href="#download" class="nav-cta">
+    ↓ Download
+  </a>
+</nav>
+
+<!-- ─── Hero ─────────────────────────────── -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">
+      <div class="hero-eyebrow-pill">
+        <span class="eyebrow-dot"></span>
+        macOS 13+ · Local only
+      </div>
+    </div>
+
+    <h1 class="hero-heading">
+      Your call history,<br>
+      <em>finally</em> under<br>
+      your control.
+    </h1>
+
+    <p class="hero-sub">
+      Read, filter, and permanently delete call records from
+      encrypted iPhone backups — entirely on your Mac.
+      No cloud. No accounts. No compromises.
+    </p>
+
+    <div class="hero-actions">
+      <a href="#download" class="btn-primary">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M8 2v8M4 7l4 4 4-4M2 13h12"/>
+        </svg>
+        Download Free
+      </a>
+      <a href="https://github.com" class="btn-ghost">
+        <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
+          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+        </svg>
+        View Source
+      </a>
+    </div>
+
+    <p class="hero-meta">
+      <span>v1.0.0</span> &nbsp;·&nbsp; <span>macOS 13 Ventura or later</span> &nbsp;·&nbsp; Apple Silicon &amp; Intel
+    </p>
+  </div>
+
+  <div class="hero-right">
+    <div class="demo-card">
+      <div class="demo-card-chrome">
+        <div class="chrome-dot"></div>
+        <div class="chrome-dot"></div>
+        <div class="chrome-dot"></div>
+        <div class="chrome-title">CallLog Cleaner — iPhone 15 Pro Max</div>
+        <div class="chrome-lock">🔒</div>
+      </div>
+      <div class="demo-kpi-strip">
+        <div class="demo-kpi">
+          <div class="demo-kpi-dot" style="background:var(--blue)"></div>
+          <span id="kpi-total" style="color:var(--t0)">847 records</span>
+        </div>
+        <div class="demo-kpi">
+          <div class="demo-kpi-dot" style="background:var(--red)"></div>
+          <span style="color:var(--t1)">63 missed</span>
+        </div>
+        <div class="demo-kpi">
+          <div class="demo-kpi-dot" style="background:var(--green)"></div>
+          <span style="color:var(--t1)">142 contacts</span>
+        </div>
+      </div>
+      <table class="demo-table">
+        <thead>
+          <tr style="opacity:1;transform:none;">
+            <th style="width:16px;padding-right:4px;"></th>
+            <th>Date</th>
+            <th>Contact</th>
+            <th>Type</th>
+            <th style="text-align:center;">Dir</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="demo-tbody">
+        </tbody>
+      </table>
+      <div class="demo-footer">
+        <div class="demo-status" id="demo-status">
+          <strong id="demo-selected-count">0</strong> selected of <strong id="demo-shown-count">0</strong> shown
+        </div>
+        <button class="demo-delete-btn" id="demo-delete-btn">
+          🗑 Delete Selected
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Trust Bar ─────────────────────────── -->
+<div class="trust-bar">
+  <div class="trust-inner">
+    <div class="trust-item reveal">
+      <div class="trust-icon">🔐</div>
+      <div class="trust-text">
+        <strong>AES-256-CBC Decryption</strong>
+        <span>Full encrypted backup support</span>
+      </div>
+    </div>
+    <div class="trust-item reveal">
+      <div class="trust-icon">🖥</div>
+      <div class="trust-text">
+        <strong>100% Local Processing</strong>
+        <span>Zero network connections made</span>
+      </div>
+    </div>
+    <div class="trust-item reveal">
+      <div class="trust-icon">🗄</div>
+      <div class="trust-text">
+        <strong>SQLite-Level Precision</strong>
+        <span>Direct database editing, no guesswork</span>
+      </div>
+    </div>
+    <div class="trust-item reveal">
+      <div class="trust-icon">📊</div>
+      <div class="trust-text">
+        <strong>Analytics Dashboard</strong>
+        <span>Visualise patterns before deleting</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── How It Works ─────────────────────── -->
+<section class="section" id="how-it-works">
+  <div class="reveal">
+    <div class="section-label">// process</div>
+    <h2 class="section-title">Four steps to<br><em>complete control.</em></h2>
+    <p class="section-sub">No setup required. No account. Plug in your iPhone, open the app, and you're done in minutes.</p>
+  </div>
+
+  <div class="steps-grid">
+    <div class="step" style="transition-delay:0s">
+      <div class="step-num step-num-lime">01</div>
+      <div class="step-title">Select Backup</div>
+      <div class="step-desc">The app automatically finds all iPhone backups stored on your Mac. Select one — encrypted backups are required.</div>
+    </div>
+    <div class="step" style="transition-delay:0.1s">
+      <div class="step-num">02</div>
+      <div class="step-title">Enter Password</div>
+      <div class="step-desc">Provide the backup password you set in Finder. The app derives the decryption key — nothing leaves your machine.</div>
+    </div>
+    <div class="step" style="transition-delay:0.2s">
+      <div class="step-num">03</div>
+      <div class="step-title">Select Records</div>
+      <div class="step-desc">Filter by contact, date, call type, or direction. Use Smart Select to find missed calls, duplicates, or short calls instantly.</div>
+    </div>
+    <div class="step" style="transition-delay:0.3s">
+      <div class="step-num">04</div>
+      <div class="step-title">Delete &amp; Restore</div>
+      <div class="step-desc">Records are deleted from the backup file, re-encrypted, and written back. Restore via Finder to apply to your iPhone.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Features ─────────────────────────── -->
+<section class="features-section" id="features">
+  <div class="reveal">
+    <div class="section-label">// features</div>
+    <h2 class="section-title">Built for<br><em>power users.</em></h2>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card" style="transition-delay:0s">
+      <div class="feature-icon fi-lime">🔓</div>
+      <div class="feature-title">Full Backup Decryption</div>
+      <div class="feature-desc">Parses Apple's BackupKeyBag TLV format, derives the KEK via two-stage PBKDF2, unwraps class keys, and decrypts both the manifest and individual files.</div>
+      <div class="feature-tags">
+        <span class="feature-tag">AES-256-CBC</span>
+        <span class="feature-tag">RFC 3394</span>
+        <span class="feature-tag">PBKDF2</span>
+        <span class="feature-tag">CommonCrypto</span>
+      </div>
+    </div>
+    <div class="feature-card" style="transition-delay:0.08s">
+      <div class="feature-icon fi-blue">🔍</div>
+      <div class="feature-title">Powerful Filtering</div>
+      <div class="feature-desc">Filter by contact name or number, date range, call type (Phone, FaceTime Video, FaceTime Audio), direction, and answered/missed status. Filters stack.</div>
+      <div class="feature-tags">
+        <span class="feature-tag">Smart Select</span>
+        <span class="feature-tag">Context Menus</span>
+        <span class="feature-tag">Multi-sort</span>
+        <span class="feature-tag">Export CSV/JSON</span>
+      </div>
+    </div>
+    <div class="feature-card" style="transition-delay:0.16s">
+      <div class="feature-icon fi-purple">🗑</div>
+      <div class="feature-title">Surgical Deletion</div>
+      <div class="feature-desc">Deletes records from ZCALLRECORD and cleans orphaned handle references. Re-encrypts the database and re-packs it into the backup with an updated Manifest.</div>
+      <div class="feature-tags">
+        <span class="feature-tag">SQLite3</span>
+        <span class="feature-tag">Re-encryption</span>
+        <span class="feature-tag">Manifest Update</span>
+        <span class="feature-tag">Zero Data Loss</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Analytics Preview ─────────────────── -->
+<section class="analytics-section" id="analytics">
+  <div class="analytics-layout">
+    <div class="analytics-text reveal">
+      <div class="section-label">// analytics</div>
+      <h2 class="section-title"><em>Understand</em><br>before you delete.</h2>
+      <p class="section-sub">A full analytics dashboard gives you insight into your call patterns before making any changes.</p>
+      <ul class="analytics-bullets">
+        <li><span class="bullet-dot"></span>Call activity over time — area chart with adjustable time range</li>
+        <li><span class="bullet-dot"></span>Top 10 contacts ranked by call frequency</li>
+        <li><span class="bullet-dot"></span>Call type distribution across Phone, FaceTime Video &amp; Audio</li>
+        <li><span class="bullet-dot"></span>Hourly heatmap showing when you call most</li>
+        <li><span class="bullet-dot"></span>Total duration, missed rate, unique contact count</li>
+      </ul>
+    </div>
+
+    <div class="analytics-preview reveal">
+      <div class="ap-chrome">
+        <div class="ap-chrome-dot" style="background:#ff5f57"></div>
+        <div class="ap-chrome-dot" style="background:#ffbd2e"></div>
+        <div class="ap-chrome-dot" style="background:#28c840"></div>
+      </div>
+      <div class="ap-tabs">
+        <div class="ap-tab">Records</div>
+        <div class="ap-tab active">Analytics</div>
+      </div>
+      <div class="ap-stats-row">
+        <div class="ap-stat">
+          <div class="ap-stat-val" data-target="847">0</div>
+          <div class="ap-stat-lbl">Total Calls</div>
+        </div>
+        <div class="ap-stat">
+          <div class="ap-stat-val">14h 22m</div>
+          <div class="ap-stat-lbl">Duration</div>
+        </div>
+        <div class="ap-stat">
+          <div class="ap-stat-val" data-target="142">0</div>
+          <div class="ap-stat-lbl">Contacts</div>
+        </div>
+        <div class="ap-stat">
+          <div class="ap-stat-val">7.4%</div>
+          <div class="ap-stat-lbl">Missed Rate</div>
+        </div>
+      </div>
+      <div class="ap-chart">
+        <div class="ap-chart-title">Call Activity — Last 30 Days</div>
+        <div class="chart-bars" id="chart-bars"></div>
+      </div>
+      <div class="ap-contacts">
+        <div class="ap-contacts-title">Top Contacts</div>
+        <div id="contact-bars"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Technical ─────────────────────────── -->
+<section class="technical-section">
+  <div class="reveal">
+    <div class="section-label">// under the hood</div>
+    <h2 class="section-title">Every detail<br><em>considered.</em></h2>
+  </div>
+
+  <div class="tech-grid">
+    <div class="tech-block">
+      <div class="tech-block-title">Encryption chain</div>
+      <div class="tech-code">
+        <span class="tc-comment">// 2-stage PBKDF2 key derivation</span><br>
+        <span class="tc-key">PBKDF2</span>(<span class="tc-val">SHA256</span>, password, <span class="tc-str">DPSL</span>, dpic)<br>
+        &nbsp;&nbsp;→ <span class="tc-key">PBKDF2</span>(<span class="tc-val">SHA1</span>, stage1, <span class="tc-str">SALT</span>, iter)<br>
+        &nbsp;&nbsp;→ <span class="tc-val">KEK</span> (key-encryption key)<br>
+        <br>
+        <span class="tc-comment">// RFC 3394 key unwrap</span><br>
+        <span class="tc-key">CCSymmetricKeyUnwrap</span>(kCCWRAPAES, KEK, WPKY)<br>
+        &nbsp;&nbsp;→ <span class="tc-val">classKey</span><br>
+        <br>
+        <span class="tc-comment">// File decryption</span><br>
+        <span class="tc-key">AES-256-CBC</span>(fileKey, iv=<span class="tc-num">0x00×16</span>)<br>
+        &nbsp;&nbsp;→ <span class="tc-val">CallHistory.storedata</span>
+      </div>
+    </div>
+    <div class="tech-block" style="transition-delay:0.15s">
+      <div class="tech-block-title">What gets cleaned up</div>
+      <ul class="tech-list">
+        <li>ZCALLRECORD rows matching selected Z_PK values</li>
+        <li>Z_2REMOTEPARTICIPANTHANDLES junction table entries</li>
+        <li>Orphaned ZHANDLE rows with no remaining call references</li>
+        <li>Manifest.db fileID updated after re-encryption</li>
+        <li>Old backup file removed; new hash location written</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Download ─────────────────────────── -->
+<section class="download-section" id="download">
+  <h2 class="download-title reveal">
+    Take back<br><em>your data.</em>
+  </h2>
+  <p class="download-sub reveal">
+    Free. Open source. Runs entirely on your Mac.
+    No tracking, no telemetry, no internet connection required.
+  </p>
+  <div class="download-actions reveal">
+    <a href="#" class="btn-download">
+      <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M9 2v10M4 9l5 5 5-5M2 15h14"/>
+      </svg>
+      <span>Download for macOS</span>
+    </a>
+    <a href="#" class="btn-ghost">
+      View on GitHub →
+    </a>
+  </div>
+  <p class="download-req reveal">
+    Requires <strong>macOS 13 Ventura</strong> or later &nbsp;·&nbsp; Apple Silicon &amp; Intel &nbsp;·&nbsp; <strong>Xcode 15+</strong> to build from source
+  </p>
+</section>
+
+<!-- ─── Footer ─────────────────────────────── -->
+<footer>
+  <div class="footer-logo">
+    <div class="footer-logo-icon">📲</div>
+    CallLog Cleaner
+  </div>
+  <p class="footer-copy">© 2025 · MIT License · No warranty</p>
+  <ul class="footer-links">
+    <li><a href="#">GitHub</a></li>
+    <li><a href="#">Privacy</a></li>
+    <li><a href="#">Issues</a></li>
+  </ul>
+</footer>
+
+<script>
+/* ──────────────────────────────────────────
+   DEMO ANIMATION
+   ────────────────────────────────────────── */
+const RECORDS = [
+  { date: 'Today 09:12', name: '+1 (415) 555-0121', type: 'phone',  dir: 'in',  status: 'missed'   },
+  { date: 'Today 08:47', name: 'Mike Johnson',       type: 'ft-a',   dir: 'out', status: 'answered' },
+  { date: 'Yesterday',   name: '+44 7700 900077',    type: 'phone',  dir: 'in',  status: 'answered' },
+  { date: 'Yesterday',   name: 'Sarah Chen',         type: 'ft-v',   dir: 'out', status: 'answered' },
+  { date: 'Mar 19',      name: '+1 (650) 555-0142',  type: 'phone',  dir: 'in',  status: 'missed'   },
+  { date: 'Mar 19',      name: 'David Park',         type: 'phone',  dir: 'out', status: 'answered' },
+  { date: 'Mar 18',      name: '+33 6 12 34 56 78',  type: 'phone',  dir: 'in',  status: 'missed'   },
+  { date: 'Mar 17',      name: 'Mom',                type: 'ft-a',   dir: 'out', status: 'answered' },
+];
+
+const TYPE_BADGES = {
+  phone: '<span class="badge badge-phone">Phone</span>',
+  'ft-v': '<span class="badge badge-ft-v">FT Video</span>',
+  'ft-a': '<span class="badge badge-ft-a">FT Audio</span>',
+};
+const STATUS_BADGES = {
+  missed:   '<span class="badge badge-missed">Missed</span>',
+  answered: '<span class="badge badge-answered">Answered</span>',
+};
+const DIR_ICONS = {
+  in:  '<div class="demo-dir dir-in">↓</div>',
+  out: '<div class="demo-dir dir-out">↑</div>',
+};
+
+const tbody   = document.getElementById('demo-tbody');
+const deleteBtn = document.getElementById('demo-delete-btn');
+const statusEl  = document.getElementById('demo-selected-count');
+const shownEl   = document.getElementById('demo-shown-count');
+
+function makeRow(record, index) {
+  const tr = document.createElement('tr');
+  tr.dataset.idx = index;
+  tr.innerHTML = `
+    <td><div class="row-check"></div></td>
+    <td style="color:var(--t2);font-size:10px">${record.date}</td>
+    <td>${record.name}</td>
+    <td>${TYPE_BADGES[record.type]}</td>
+    <td>${DIR_ICONS[record.dir]}</td>
+    <td>${STATUS_BADGES[record.status]}</td>
+  `;
+  return tr;
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function runDemo() {
+  // Clear
+  tbody.innerHTML = '';
+  let selectedRows = [];
+
+  // Phase 1: Populate rows
+  for (let i = 0; i < RECORDS.length; i++) {
+    const tr = makeRow(RECORDS[i], i);
+    tbody.appendChild(tr);
+    await sleep(60);
+    tr.classList.add('row-visible');
+    shownEl.textContent = i + 1;
+  }
+
+  await sleep(800);
+
+  // Phase 2: Select missed calls (0, 4, 6)
+  const toSelect = [0, 4, 6];
+  for (const idx of toSelect) {
+    const tr = tbody.querySelectorAll('tr')[idx];
+    if (!tr) continue;
+    await sleep(320);
+    tr.classList.add('row-selected');
+    selectedRows.push(tr);
+    statusEl.textContent = selectedRows.length;
+  }
+
+  await sleep(400);
+  deleteBtn.classList.add('visible', 'pulse');
+
+  await sleep(1400);
+  deleteBtn.classList.remove('pulse');
+
+  // Phase 3: Flash delete state
+  for (const tr of selectedRows) {
+    tr.classList.add('row-deleting');
+  }
+
+  await sleep(500);
+
+  // Phase 4: Delete rows
+  for (const tr of selectedRows) {
+    tr.classList.remove('row-deleting');
+    tr.classList.add('row-gone');
+  }
+  statusEl.textContent = '0';
+
+  await sleep(400);
+  for (const tr of selectedRows) tr.remove();
+
+  const remaining = tbody.querySelectorAll('tr').length;
+  shownEl.textContent = remaining;
+  deleteBtn.classList.remove('visible');
+
+  await sleep(2200);
+
+  // Loop
+  runDemo();
+}
+
+// Start demo after fonts load
+document.fonts.ready.then(() => {
+  setTimeout(runDemo, 600);
+});
+
+
+/* ──────────────────────────────────────────
+   CHART BARS
+   ────────────────────────────────────────── */
+const chartBarsEl = document.getElementById('chart-bars');
+if (chartBarsEl) {
+  const heights = [22,18,35,28,45,32,55,40,62,48,38,58,72,50,45,65,55,42,68,75,52,48,80,65,38,72,85,60,42,55];
+  const max = Math.max(...heights);
+  heights.forEach((h, i) => {
+    const bar = document.createElement('div');
+    bar.className = 'chart-bar' + (i === heights.length - 5 ? ' bar-highlight' : '');
+    bar.style.height = (h / max * 100) + '%';
+    bar.title = `${h} calls`;
+    chartBarsEl.appendChild(bar);
+  });
+}
+
+/* ──────────────────────────────────────────
+   CONTACT BARS
+   ────────────────────────────────────────── */
+const contacts = [
+  { name: 'Mom',        count: 94 },
+  { name: 'Work',       count: 78 },
+  { name: 'Mike J.',    count: 61 },
+  { name: 'Sarah C.',   count: 45 },
+  { name: '+44 7700',   count: 33 },
+];
+const maxCount = contacts[0].count;
+const contactBarsEl = document.getElementById('contact-bars');
+if (contactBarsEl) {
+  contacts.forEach(c => {
+    const row = document.createElement('div');
+    row.className = 'contact-row';
+    row.innerHTML = `
+      <div class="contact-name">${c.name}</div>
+      <div class="contact-bar-wrap">
+        <div class="contact-bar-fill" style="transform:scaleX(${c.count/maxCount})"></div>
+      </div>
+      <div class="contact-count">${c.count}</div>
+    `;
+    contactBarsEl.appendChild(row);
+  });
+}
+
+/* ──────────────────────────────────────────
+   SCROLL REVEAL
+   ────────────────────────────────────────── */
+const revealEls = document.querySelectorAll('.reveal, .step, .feature-card, .tech-block');
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObs.unobserve(entry.target);
+
+      // Animate contact bars when analytics section is visible
+      if (entry.target.closest('.analytics-preview')) {
+        document.querySelectorAll('.contact-bar-fill').forEach((el, i) => {
+          setTimeout(() => el.classList.add('animated'), i * 150);
+        });
+      }
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+revealEls.forEach(el => revealObs.observe(el));
+
+/* ──────────────────────────────────────────
+   COUNTER ANIMATION
+   ────────────────────────────────────────── */
+function animateCount(el, target, duration = 1200) {
+  const start = performance.now();
+  function update(now) {
+    const t = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - t, 3);
+    el.textContent = Math.round(ease * target);
+    if (t < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+const counterObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const target = parseInt(entry.target.dataset.target);
+      if (!isNaN(target)) animateCount(entry.target, target);
+      counterObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('[data-target]').forEach(el => counterObs.observe(el));
+
+/* ──────────────────────────────────────────
+   CONTACT BAR OBSERVER
+   ────────────────────────────────────────── */
+const barObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      document.querySelectorAll('.contact-bar-fill').forEach((el, i) => {
+        setTimeout(() => el.classList.add('animated'), 200 + i * 120);
+      });
+      barObs.disconnect();
+    }
+  });
+}, { threshold: 0.3 });
+
+const apSection = document.querySelector('.analytics-preview');
+if (apSection) barObs.observe(apSection);
+
+/* ──────────────────────────────────────────
+   NAV ACTIVE STATE
+   ────────────────────────────────────────── */
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+const navObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(a => a.style.color = '');
+      const id = entry.target.id;
+      const activeLink = document.querySelector(`.nav-links a[href="#${id}"]`);
+      if (activeLink) activeLink.style.color = 'var(--t0)';
+    }
+  });
+}, { threshold: 0.4 });
+sections.forEach(s => navObs.observe(s));
+</script>
+
+</body>
+</html>
